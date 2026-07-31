@@ -62,6 +62,7 @@ sysinfo.txt
 *.apk
 *.aab
 *.unitypackage
+!Helldiver.unitypackage
 *.app
 
 # Crashlytics generated file
