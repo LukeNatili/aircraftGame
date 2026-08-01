@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -49,6 +50,7 @@ public class PlaneController : MonoBehaviour
     public Vector3 Velocity;
     public Vector3 LocalVelocity;
     public Vector3 LocalAngularVelocity;
+    public Vector3 MaxAngularVelocity;
     public float AngleOfAttackYaw;
     public float AngleOfAttack;
     public Vector3 LastVelocity;
@@ -80,39 +82,78 @@ public class PlaneController : MonoBehaviour
     public float RudderPower;
     public AnimationCurve RudderAOACurve;
 
+    //tuning parameter for steering
+    public AnimationCurve SteeringCurve;
+
+    public Vector3 TurnSpeed;
+    public Vector3 TurnAcceleration;
+    public Vector3 controlInput;
+
+    //void OnDrawGizmosSelected()
+    //{
+    //    if (TryGetComponent<Rigidbody>(out var rb))
+    //    {
+    //        Gizmos.color = Color.yellow;
+    //        Gizmos.DrawSphere(rb.centerOfMass, 0.2f);
+    //    }
+    //    rb.centerOfMass = new Vector3(0, -.5f, 2f);
+    //}
     void OnDrawGizmosSelected()
     {
-        if (TryGetComponent<Rigidbody>(out var rb))
+        if (rb != null)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(rb.centerOfMass, 0.2f);
+            Gizmos.DrawSphere(transform.TransformPoint(rb.centerOfMass), 0.2f);
         }
-        rb.centerOfMass = new Vector3(0, -.5f, 2f);
     }
 
+    void Awake()
+    {
+        rb.centerOfMass = new Vector3(-6.5f, 4.5f, -9f);
+    }
 
-    // IMPORTANT NOTE: For some reason for the plane to move forwards, the throttle must be in the negative values. 
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.UpArrow)) // if a player holds the up arrow, the throttle gradually 'increases' (in reality the throttle value is negative, but the plane picks up speed)
+        if (Input.GetKey(KeyCode.LeftShift)) // if a player holds the left shift button, the throttle gradually 'increases' (in reality the throttle value is negative, but the plane picks up speed)
+        {
+            //Throttle += IncrementSpeed * Time.deltaTime;
+            if (Throttle < 500)
+            {
+                Throttle += IncrementSpeed * Time.deltaTime;
+            }
+            Debug.Log("Current Throttle Value: " + Throttle);
+        }
+        else if (Throttle > 0)
         {
             Throttle -= IncrementSpeed * Time.deltaTime;
             Debug.Log("Current Throttle Value: " + Throttle);
         }
-        else if (Throttle < 0)
-        {
-            Throttle += IncrementSpeed * Time.deltaTime;
-            Debug.Log("Current Throttle Value: " + Throttle);
-        }
+
+        // Roll = z axis, Pitch = x axis, Yaw = y axis
+        float roll = 0f;
+        if (Input.GetKey(KeyCode.A)) roll = 1f;
+        else if (Input.GetKey(KeyCode.D)) roll = -1f;
+
+        float pitch = 0f;
+        if (Input.GetKey(KeyCode.W)) pitch = 1f;
+        else if (Input.GetKey(KeyCode.S)) pitch = -1f;
+
+        float yaw = 0f;
+        if (Input.GetKey(KeyCode.Q)) yaw = 1f;
+        else if (Input.GetKey(KeyCode.E)) yaw = -1f;
+
+        controlInput = new Vector3(pitch, yaw, roll);
+
 
         float dt = Time.fixedDeltaTime;
 
         CalculateState(dt);
         CalculateAngleOfAttack();
-        CalculateGForce(dt);
+        CalculateGForce(LocalAngularVelocity, Velocity);
         UpdateThrust();
         UpdateDrag();
         UpdateLift();
+        UpdateSteering(dt);
     }
 
     void CalculateState(float dt)
@@ -131,23 +172,64 @@ public class PlaneController : MonoBehaviour
             AngleOfAttackYaw = 0;
             return;
         }
-
-        AngleOfAttackYaw = Mathf.Atan2(-LocalVelocity.y, LocalVelocity.z);
+        //the source of so many of my problems, pitch actually feels good now
+        //AngleOfAttackYaw = Mathf.Atan2(-LocalVelocity.y, LocalVelocity.z);
+        AngleOfAttack = Mathf.Atan2(-LocalVelocity.y, LocalVelocity.z);
         AngleOfAttackYaw = Mathf.Atan2(LocalVelocity.x, LocalVelocity.z);
     }
 
-    void CalculateGForce(float dt)
+    //void CalculateGForce(float dt)
+    //{
+    //    var invRotation = Quaternion.Inverse(rb.rotation);
+    //    var acceleration = (Velocity - LastVelocity) / dt;
+    //    LocalGForce = invRotation * acceleration;
+    //    LastVelocity = Velocity;
+    //}
+    Vector3 CalculateGForce(Vector3 AngularVelocity, Vector3 Velocity)
     {
-        var invRotation = Quaternion.Inverse(rb.rotation);
-        var acceleration = (Velocity - LastVelocity) / dt;
-        LocalGForce = invRotation * acceleration;
-        LastVelocity = Velocity;
+        return Vector3.Cross(AngularVelocity, Velocity);
     }
 
+    Vector3 CalculateGForceLimit(Vector3 input)
+    {
+        return PlaneController.Scale6(input,
+            4f, 8f,  //pitch down gLimit, pitch up gLimit
+            7f, 7f,   //yaw
+            5f, 5f    //roll
+            ) * 9.81f;
+    }
+
+    float CalculateGLimiter(Vector3 controlInput, Vector3 MaxAngularVelocity)
+    {
+        //if the player gives input with magnitude less than 1, scale up there input so that magnitude == 1
+        var maxInput = controlInput.normalized;
+
+        var limit = CalculateGForceLimit(maxInput);
+        var maxGForce = CalculateGForce(Vector3.Scale(maxInput, MaxAngularVelocity), LocalVelocity);
+
+        if (maxGForce.magnitude > limit.magnitude)
+        {
+            //example:
+            //maxGForce = 16G, limit = 8G
+            //so this is 8 / 16 or 0.5
+            return limit.magnitude / maxGForce.magnitude;
+        }
+
+        return 1;
+    }
+
+    //tuner variable for the simulated climb/dive forces
+    public float Weight = 20f;
     void UpdateThrust()
     {
         rb.AddRelativeForce(Throttle * MaxThrust * Vector3.forward);
-        //rb.AddForceAtPosition(Throttle * MaxThrust * Vector3.right, rb.centerOfMass);
+
+        //apply a tunable gravity-like force along the plane's forward axis
+        //climbing loses speed diving gains speed independent of actual gravity
+        //pitch up (forwards points skyward) gives a negative dot product, resulting in speed loss, and vice versa
+        //using ForceMode.Acceleration here specifically bypasses mass scaling so Weight acts consistently despite mass
+        float forwardGravityForce = Vector3.Dot(Physics.gravity.normalized, transform.forward);
+        rb.AddRelativeForce(Vector3.forward * forwardGravityForce * Weight, ForceMode.Acceleration);
 
     }
 
@@ -220,6 +302,38 @@ public class PlaneController : MonoBehaviour
         var inducedDrag = dragDirection * v2 * dragForce;
 
         return lift + inducedDrag;
+    }
+
+    float CalculateSteering(float dt, float angularVelocity, float targetVelocity, float acceleration)
+    {
+        var error = targetVelocity - angularVelocity;
+        var accel = acceleration * dt;
+        return Mathf.Clamp(error, -accel, accel);
+    }
+
+    void UpdateSteering(float dt)
+    {
+        //var speed = Mathf.Max(0, LocalVelocity.z);
+        var speed = Mathf.Abs(LocalVelocity.z);
+        var steeringPower = SteeringCurve.Evaluate(speed);
+
+        var gForceScaling = CalculateGLimiter(controlInput, TurnSpeed * Mathf.Deg2Rad * steeringPower);
+
+        //control input is the combination of inputs from the player (pitch, roll, and yaw). turnSpeed is the turn rate of each axis. TargetAV is limited by steeringPower, an AnimationCurve that reduces the strength of turn at low speed.
+        var targetAV = Vector3.Scale(controlInput, TurnSpeed * steeringPower * gForceScaling);
+        var av = LocalAngularVelocity * Mathf.Rad2Deg;
+
+        var correction = new Vector3(
+            CalculateSteering(dt, av.x, targetAV.x, TurnAcceleration.x * steeringPower),
+            CalculateSteering(dt, av.y, targetAV.y, TurnAcceleration.y * steeringPower),
+            CalculateSteering(dt, av.z, targetAV.z, TurnAcceleration.z * steeringPower)
+        );
+
+        Debug.Log($"input:{controlInput} speed:{speed} steeringPower:{steeringPower} targetAV:{targetAV} correction:{correction}");
+
+        rb.AddRelativeTorque(correction * Mathf.Deg2Rad, ForceMode.VelocityChange);
+        //var torque =
+        //rb.AddRelativeTorque(torque * Mathf.Deg2Rad);
     }
 
    
