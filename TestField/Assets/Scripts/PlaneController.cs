@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class PlaneController : MonoBehaviour
@@ -73,6 +74,7 @@ public class PlaneController : MonoBehaviour
     public float FlapsDrag;
     public float FlapsLiftPower;
     public float FlapsAOABias;
+    public bool LandingGearDeployed;
 
     //tuning parameter for dragForce
     public float InducedDrag = 15;
@@ -89,6 +91,8 @@ public class PlaneController : MonoBehaviour
     public Vector3 TurnAcceleration;
     public Vector3 controlInput;
 
+    //new way of controlling player input
+    public PlayerInputActions PlayerInput;
     void OnDrawGizmosSelected()
     {
         if (rb != null)
@@ -100,12 +104,39 @@ public class PlaneController : MonoBehaviour
 
     void Awake()
     {
+        //centering the mass to the plane
         rb.centerOfMass = new Vector3(-6.5f, 4.5f, -9f);
+
+        //instantiating the player input
+        PlayerInput = new PlayerInputActions();
+        
+
+    }
+
+    void OnEnable()
+    {
+        //enabling the action map
+        PlayerInput.Plane.Enable();
+
+        //generates a context event on key press
+        PlayerInput.Plane.IncreaseThrottle.performed += ThrottleStatus;
+
+    }
+
+    void OnDisable()
+    {
+        PlayerInput.Plane.IncreaseThrottle.performed -= ThrottleStatus;
+        PlayerInput.Plane.Disable();
+    }
+
+    void ThrottleStatus(InputAction.CallbackContext context)
+    {
+        Debug.Log("Throttled!");
     }
 
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftShift)) // if a player holds the left shift button, the throttle gradually 'increases' (in reality the throttle value is negative, but the plane picks up speed)
+        if (PlayerInput.Plane.IncreaseThrottle.IsPressed())
         {
             Throttle = Mathf.Min(Throttle + (IncrementSpeed / 500f) * Time.deltaTime, 1f);
             Debug.Log("Current Throttle Value: " + Throttle);
@@ -116,18 +147,18 @@ public class PlaneController : MonoBehaviour
             Debug.Log("Current Throttle Value: " + Throttle);
         }
 
-        // Roll = z axis, Pitch = x axis, Yaw = y axis
+        //Roll = z axis, Pitch = x axis, Yaw = y axis
         float roll = 0f;
-        if (Input.GetKey(KeyCode.A)) roll = 1f;
-        else if (Input.GetKey(KeyCode.D)) roll = -1f;
+        if (PlayerInput.Plane.RollRight.IsPressed()) roll = -1f;
+        if (PlayerInput.Plane.RollLeft.IsPressed()) roll = 1f;
 
         float pitch = 0f;
-        if (Input.GetKey(KeyCode.W)) pitch = 1f;
-        else if (Input.GetKey(KeyCode.S)) pitch = -1f;
+        if (PlayerInput.Plane.PitchDown.IsPressed()) pitch = 1f;
+        if (PlayerInput.Plane.PitchUp.IsPressed()) pitch = -1f;
 
         float yaw = 0f;
-        if (Input.GetKey(KeyCode.Q)) yaw = 1f;
-        else if (Input.GetKey(KeyCode.E)) yaw = -1f;
+        if (PlayerInput.Plane.BankLeft.IsPressed()) yaw = -1f;
+        if (PlayerInput.Plane.BankRight.IsPressed()) yaw = 1f;
 
         controlInput = new Vector3(pitch, yaw, roll);
 
