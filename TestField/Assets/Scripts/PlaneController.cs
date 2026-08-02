@@ -119,20 +119,21 @@ public class PlaneController : MonoBehaviour
         PlayerInput.Plane.Enable();
 
         //generates a context event on key press
-        PlayerInput.Plane.IncreaseThrottle.performed += ThrottleStatus;
+        //PlayerInput.Plane.IncreaseThrottle.performed += ThrottleStatus;
 
     }
 
     void OnDisable()
     {
-        PlayerInput.Plane.IncreaseThrottle.performed -= ThrottleStatus;
+        //PlayerInput.Plane.IncreaseThrottle.performed -= ThrottleStatus;
         PlayerInput.Plane.Disable();
     }
 
-    void ThrottleStatus(InputAction.CallbackContext context)
-    {
-        Debug.Log("Throttled!");
-    }
+    //supposed to debug, i dont think it works
+    //void ThrottleStatus(InputAction.CallbackContext context)
+    //{
+    //    Debug.Log("Throttled!");
+    //}
 
     void FixedUpdate()
     {
