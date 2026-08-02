@@ -906,7 +906,7 @@ MonoBehaviour:
   LastVelocity: {x: 0, y: 0, z: 0}
   LocalGForce: {x: 0, y: 0, z: 0}
   Throttle: 0
-  MaxThrust: 295
+  MaxThrust: 129047
   IncrementSpeed: 50
   DragRight:
     serializedVersion: 2
@@ -1018,7 +1018,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 1
+      value: 0.5
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1110,7 +1110,7 @@ MonoBehaviour:
   FlapsLiftPower: 0
   FlapsAOABias: 0
   InducedDrag: 15
-  LiftPower: 1
+  LiftPower: 150
   LiftAOACurve:
     serializedVersion: 2
     m_Curve:
@@ -1238,10 +1238,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  TurnSpeed: {x: 30, y: 15, z: 270}
+  TurnSpeed: {x: 27, y: 15, z: 270}
   TurnAcceleration: {x: 60, y: 30, z: 540}
   controlInput: {x: 0, y: 0, z: 0}
   Weight: 20
+  DragScale: 0.16
+  LiftScale: 0.16
 --- !u!54 &768817605
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1250,7 +1252,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 768817603}
   serializedVersion: 5
-  m_Mass: 1495
+  m_Mass: 4784
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: -6.5, y: 5, z: -8}
@@ -2666,7 +2668,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4904720163824583632}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed64bc81225de62448413378bf46e1ea, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2689,7 +2691,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4904720163824583633}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed64bc81225de62448413378bf46e1ea, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2712,7 +2714,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4904720163824583634}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed64bc81225de62448413378bf46e1ea, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
