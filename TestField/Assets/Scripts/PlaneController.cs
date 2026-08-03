@@ -170,6 +170,9 @@ public class PlaneController : MonoBehaviour
         if (PlayerInput.Plane.BankLeft.IsPressed()) yaw = -1f;
         if (PlayerInput.Plane.BankRight.IsPressed()) yaw = 1f;
 
+        if (PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = true;
+        if (!PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = false;
+
         controlInput = new Vector3(pitch, yaw, roll);
 
 

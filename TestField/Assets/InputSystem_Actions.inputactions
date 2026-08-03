@@ -1068,6 +1068,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DeployAirbreak",
+                    "type": "Button",
+                    "id": "ba821044-8d4d-4813-8af9-54859bfa4b79",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1078,6 +1087,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
+                    "action": "BankLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb0c286f-ab7c-4f20-b9e7-9bbefef8d80e",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
                     "action": "BankLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1095,11 +1115,33 @@
                 },
                 {
                     "name": "",
+                    "id": "31fbf1df-4389-4245-a061-ec02a8e8a6c4",
+                    "path": "<Gamepad>/leftStick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "RollLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "a6ba7912-de15-43cd-bc66-0424c470442f",
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
+                    "action": "RollRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "85e45990-7a68-40be-a580-694d0eea695c",
+                    "path": "<Gamepad>/leftStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
                     "action": "RollRight",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1117,11 +1159,33 @@
                 },
                 {
                     "name": "",
+                    "id": "0cebc9c3-ac57-466a-97fc-e7cfc55115e2",
+                    "path": "<Gamepad>/leftStick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "PitchUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "6e32969b-9bc4-43c8-a250-c377164572d2",
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
+                    "action": "PitchDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d39449c-f150-4537-b536-bc194bad1999",
+                    "path": "<Gamepad>/leftStick/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
                     "action": "PitchDown",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1139,12 +1203,56 @@
                 },
                 {
                     "name": "",
+                    "id": "adc3d6ec-25b2-4d04-9e47-4427bfbeeef5",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "BankRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1edcc488-03db-4858-be93-f0a8f1fb3e19",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "IncreaseThrottle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6e9936b3-c2f1-42cd-beb2-57e3cf7f6fc2",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "IncreaseThrottle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "11ae640e-0ba8-4615-96fb-c99229bd3898",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DeployAirbreak",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "974b9824-eea8-467a-8aea-fe111cef211c",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "DeployAirbreak",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
