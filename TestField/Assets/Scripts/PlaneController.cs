@@ -79,7 +79,7 @@ public class PlaneController : MonoBehaviour
     //tuning parameter for dragForce
     public float InducedDrag = 15;
 
-    public float LiftPower = 1F;
+    public float LiftPower = 75F;
     public AnimationCurve LiftAOACurve;
     public float RudderPower;
     public AnimationCurve RudderAOACurve;
@@ -90,6 +90,13 @@ public class PlaneController : MonoBehaviour
     public Vector3 TurnSpeed;
     public Vector3 TurnAcceleration;
     public Vector3 controlInput;
+
+    //forward speed (m/s) at which thrust output tapers to zero
+    public float TopSpeed = 132f;
+    //X-Axis: current speed / TopSpeed. Y-Axis: thrust multiplier.
+    //should stay at 1 for most of the range, then fall to 0 by X=1 so thrust can't push the plane past TopSpeed
+    //but doesn't limit dive speed too
+    public AnimationCurve ThrottleResponseCurve = AnimationCurve.Linear(0f, 1f, 1f, 0f);
 
     //new way of controlling player input
     public PlayerInputActions PlayerInput;
@@ -105,7 +112,9 @@ public class PlaneController : MonoBehaviour
     void Awake()
     {
         //centering the mass to the plane
-        rb.centerOfMass = new Vector3(-6.5f, 4.5f, -9f);
+        //rb.centerOfMass = new Vector3(-6.5f, 4.5f, -9f);
+
+        Debug.Log($"Inertia Tensor: {rb.inertiaTensor}, Mass: {rb.mass}");
 
         //instantiating the player input
         PlayerInput = new PlayerInputActions();
@@ -144,7 +153,7 @@ public class PlaneController : MonoBehaviour
         }
         else if (Throttle > 0)
         {
-            Throttle = Mathf.Min(Throttle - (IncrementSpeed / 500f) * Time.deltaTime, 1f);
+            Throttle = Mathf.Min(Throttle - (IncrementSpeed / 250f) * Time.deltaTime, 1f);
             Debug.Log("Current Throttle Value: " + Throttle);
         }
 
@@ -167,6 +176,7 @@ public class PlaneController : MonoBehaviour
         float dt = Time.fixedDeltaTime;
 
         Debug.Log($"Throttle: {Throttle}, Thrust Force: {Throttle * MaxThrust}");
+        
 
         CalculateState(dt);
         CalculateAngleOfAttack();
@@ -174,6 +184,7 @@ public class PlaneController : MonoBehaviour
         UpdateThrust();
         UpdateDrag();
         UpdateLift();
+        UpdateAeroTorque();
         UpdateSteering(dt);
     }
 
@@ -199,13 +210,6 @@ public class PlaneController : MonoBehaviour
         AngleOfAttackYaw = Mathf.Atan2(LocalVelocity.x, LocalVelocity.z);
     }
 
-    //void CalculateGForce(float dt)
-    //{
-    //    var invRotation = Quaternion.Inverse(rb.rotation);
-    //    var acceleration = (Velocity - LastVelocity) / dt;
-    //    LocalGForce = invRotation * acceleration;
-    //    LastVelocity = Velocity;
-    //}
     Vector3 CalculateGForce(Vector3 AngularVelocity, Vector3 Velocity)
     {
         return Vector3.Cross(AngularVelocity, Velocity);
@@ -240,10 +244,14 @@ public class PlaneController : MonoBehaviour
     }
 
     //tuner variable for the simulated climb/dive forces
-    public float Weight = 0f;
+    public float Weight = 1f;
     void UpdateThrust()
     {
-        rb.AddRelativeForce(Throttle * MaxThrust * Vector3.forward);
+        float forwardSpeed = Mathf.Max(0f, LocalVelocity.z);
+        float speedRatio = forwardSpeed / Mathf.Max(TopSpeed, 0.01f);
+        float thrustMultiplier = ThrottleResponseCurve.Evaluate(speedRatio);
+
+        rb.AddRelativeForce(Throttle * MaxThrust * thrustMultiplier * Vector3.forward);
 
         //apply a tunable gravity-like force along the plane's forward axis
         //climbing loses speed diving gains speed independent of actual gravity
@@ -362,6 +370,50 @@ public class PlaneController : MonoBehaviour
         rb.AddRelativeTorque(correction * Mathf.Deg2Rad, ForceMode.VelocityChange);
         //var torque =
         //rb.AddRelativeTorque(torque * Mathf.Deg2Rad);
+    }
+
+    [Header("Aerodynamic Stability (Weathervaning)")]
+    [Tooltip("How strongly the nose is pulled toward the velocity vector in yaw." + "(what makes the nose tip down in a dive and up in a climb)")]
+    public AnimationCurve PitchStabilityCurve;
+
+    [Tooltip("How strongly the nose is pulled toward the velocity vector. " + "(what turns a bank into an actual coordinated turn instead of a sideways slide)")]
+    public AnimationCurve YawStabilityCurve;
+
+    void Reset()
+    {
+
+        //Reset() only runs in editor when the component is added or manually reset
+        PitchStabilityCurve = new AnimationCurve(
+            new Keyframe(0f, 0f),   //no restoring torque near stall
+            new Keyframe(20f, 5f),  //ramping up through normal flight speed
+            new Keyframe(80f, 40f), //strong by cruise/dive speed
+            new Keyframe(150f, 40f) //flattened off at high speed, not still climbing
+        );
+
+        YawStabilityCurve = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(20f, 5f),
+            new Keyframe(80f, 40f),
+            new Keyframe(150f, 40f)
+        );
+    }
+
+    void UpdateAeroTorque()
+    {
+
+        float speed = LocalVelocity.magnitude;
+
+        float pitchTorque = AngleOfAttack * PitchStabilityCurve.Evaluate(speed);
+        float yawTorque = -AngleOfAttackYaw * YawStabilityCurve.Evaluate(speed);
+
+        //safety clamp to prevent any single-frame spike (noisy AoA or an extreme angle)
+        //from producing a violent, uncontrollable snap
+        float maxTorque = 20000f;
+        pitchTorque = Mathf.Clamp(pitchTorque, -maxTorque, maxTorque);
+        yawTorque = Mathf.Clamp(yawTorque, -maxTorque, maxTorque);
+
+        rb.AddRelativeTorque(new Vector3(pitchTorque, yawTorque, 0f));
+        Debug.Log($"speed:{speed} AoA:{AngleOfAttack} pitchCurveVal:{PitchStabilityCurve.Evaluate(speed)} pitchTorque:{pitchTorque}");
     }
 
    
