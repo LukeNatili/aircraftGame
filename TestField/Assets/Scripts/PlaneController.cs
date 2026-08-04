@@ -100,6 +100,12 @@ public class PlaneController : MonoBehaviour
 
     //new way of controlling player input
     public PlayerInputActions PlayerInput;
+
+    //
+    public Animator animator;
+    public AnimationClip clip;
+    [Tooltip("How many seconds it takes for the animation to fully play forwards or backwards. Defaults to clips length if left at 0.")]
+    public float playbackDuration = 0f;
     void OnDrawGizmosSelected()
     {
         if (rb != null)
@@ -119,6 +125,11 @@ public class PlaneController : MonoBehaviour
         //instantiating the player input
         PlayerInput = new PlayerInputActions();
         
+
+    }
+
+    void Start()
+    {
 
     }
 
