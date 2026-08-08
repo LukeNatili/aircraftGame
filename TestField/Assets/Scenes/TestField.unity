@@ -1556,12 +1556,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  animator: {fileID: 0}
-  clip: {fileID: 0}
-  playbackDuration: 0
-  Weight: 10
-  DragScale: 0.16
-  LiftScale: 0.16
   PitchStabilityCurve:
     serializedVersion: 2
     m_Curve:
@@ -1646,6 +1640,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  Weight: 10
+  DragScale: 0.16
+  LiftScale: 0.16
 --- !u!54 &1213052773
 Rigidbody:
   m_ObjectHideFlags: 0

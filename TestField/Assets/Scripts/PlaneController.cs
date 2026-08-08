@@ -57,8 +57,8 @@ public class PlaneController : MonoBehaviour
     public Vector3 LastVelocity;
     public Vector3 LocalGForce;
     public float Throttle = 0.0F;
-    public float MaxThrust = 23463F;
-    public float IncrementSpeed = 50F;
+    public float MaxThrust = 129047f;
+    public float IncrementSpeed = 35f;
 
     public AnimationCurve DragRight;
     public AnimationCurve DragLeft;
@@ -69,7 +69,7 @@ public class PlaneController : MonoBehaviour
     public AnimationCurve AoaCurve;
 
     public bool AirbrakeDeployed;
-    public float AirbrakeDrag = 50F;
+    public float AirbrakeDrag = 15F;
     public bool FlapsDeployed;
     public float FlapsDrag;
     public float FlapsLiftPower;
@@ -79,7 +79,7 @@ public class PlaneController : MonoBehaviour
     //tuning parameter for dragForce
     public float InducedDrag = 15;
 
-    public float LiftPower = 75F;
+    public float LiftPower = 150f;
     public AnimationCurve LiftAOACurve;
     public float RudderPower;
     public AnimationCurve RudderAOACurve;
@@ -93,6 +93,7 @@ public class PlaneController : MonoBehaviour
 
     //forward speed (m/s) at which thrust output tapers to zero
     public float TopSpeed = 132f;
+
     //X-Axis: current speed / TopSpeed. Y-Axis: thrust multiplier.
     //should stay at 1 for most of the range, then fall to 0 by X=1 so thrust can't push the plane past TopSpeed
     //but doesn't limit dive speed too
@@ -101,11 +102,13 @@ public class PlaneController : MonoBehaviour
     //new way of controlling player input
     public PlayerInputActions PlayerInput;
 
-    //
-    public Animator animator;
-    public AnimationClip clip;
-    [Tooltip("How many seconds it takes for the animation to fully play forwards or backwards. Defaults to clips length if left at 0.")]
-    public float playbackDuration = 0f;
+    [Header("Aerodynamic Stability (Weathervaning)")]
+    [Tooltip("How strongly the nose is pulled toward the velocity vector in yaw." + "(what makes the nose tip down in a dive and up in a climb)")]
+    public AnimationCurve PitchStabilityCurve;
+
+    [Tooltip("How strongly the nose is pulled toward the velocity vector. " + "(what turns a bank into an actual coordinated turn instead of a sideways slide)")]
+    public AnimationCurve YawStabilityCurve;
+
     void OnDrawGizmosSelected()
     {
         if (rb != null)
@@ -218,8 +221,6 @@ public class PlaneController : MonoBehaviour
             AngleOfAttackYaw = 0;
             return;
         }
-        //the source of so many of my problems, pitch actually feels good now
-        //AngleOfAttackYaw = Mathf.Atan2(-LocalVelocity.y, LocalVelocity.z);
         AngleOfAttack = Mathf.Atan2(-LocalVelocity.y, LocalVelocity.z);
         AngleOfAttackYaw = Mathf.Atan2(LocalVelocity.x, LocalVelocity.z);
     }
@@ -388,30 +389,95 @@ public class PlaneController : MonoBehaviour
         //rb.AddRelativeTorque(torque * Mathf.Deg2Rad);
     }
 
-    [Header("Aerodynamic Stability (Weathervaning)")]
-    [Tooltip("How strongly the nose is pulled toward the velocity vector in yaw." + "(what makes the nose tip down in a dive and up in a climb)")]
-    public AnimationCurve PitchStabilityCurve;
 
-    [Tooltip("How strongly the nose is pulled toward the velocity vector. " + "(what turns a bank into an actual coordinated turn instead of a sideways slide)")]
-    public AnimationCurve YawStabilityCurve;
+
+    //Reset() only runs in editor when the component is added or manually reset
 
     void Reset()
     {
-
-        //Reset() only runs in editor when the component is added or manually reset
+        MaxThrust = 129047;
+        IncrementSpeed = 35;
+        DragRight = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(1f, 1f)
+        );
+        DragLeft = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(1f, 1f)
+        );
+        DragTop = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(1f, 1f)
+        );
+        DragBottom = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(1f, 1f)
+        );
+        DragForward = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(1f, 1f)
+        );
+        DragBack = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(1f, 1f)
+        );
+        AoaCurve = new AnimationCurve(
+            new Keyframe(-90f, 0f),
+            new Keyframe(-30f, -1f),
+            new Keyframe(0f, 0f),
+            new Keyframe(30f, 1f),
+            new Keyframe(90f, 0f)
+        );
+        AirbrakeDrag = 15;
+        FlapsDrag = 0;
+        FlapsLiftPower = 150;
+        FlapsAOABias = 0;
+        InducedDrag = 15;
+        LiftPower = 150;
+        LiftAOACurve = new AnimationCurve(
+            new Keyframe(-90f, 0f),
+            new Keyframe(-30f, -1f),
+            new Keyframe(0f, 0f),
+            new Keyframe(30f, 1f),
+            new Keyframe(90f, 0f)
+        );
+        RudderPower = 50;
+        RudderAOACurve = new AnimationCurve(
+            new Keyframe(-90f, 0f),
+            new Keyframe(-30f, -1f),
+            new Keyframe(0f, 0f),
+            new Keyframe(30f, 1f),
+            new Keyframe(90f, 0f)
+        );
+        SteeringCurve = new AnimationCurve(
+            new Keyframe(0f, 0f),
+            new Keyframe(1f, 1f)
+        );
+        TurnSpeed = new Vector3(27, 30, 100);
+        TurnAcceleration = new Vector3(60, 15, 250);
+        TopSpeed = 132;
+        ThrottleResponseCurve = new AnimationCurve(
+            new Keyframe(0f, 1f),
+            new Keyframe(0.90f, 1f),
+            new Keyframe(1f, 0f)
+        );
+        Weight = 10;
+        DragScale = 0.16f;
+        LiftScale = 0.16f;
         PitchStabilityCurve = new AnimationCurve(
             new Keyframe(0f, 0f),   //no restoring torque near stall
             new Keyframe(15f, 0f),  //ramping up through normal flight speed
             new Keyframe(40f, 20000f), //strong by cruise/dive speed
             new Keyframe(150f, 60000f) //flattened off at high speed, not still climbing
         );
-
         YawStabilityCurve = new AnimationCurve(
             new Keyframe(0f, 0f),
             new Keyframe(15f, 0f),
             new Keyframe(40f, 150000f),
             new Keyframe(150f, 250000f)
         );
+
+
     }
 
     void UpdateAeroTorque()
