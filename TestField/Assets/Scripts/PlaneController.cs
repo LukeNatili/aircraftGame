@@ -76,6 +76,7 @@ public class PlaneController : MonoBehaviour
     public float FlapsAOABias;
     public bool LandingGearDeployed;
     public float LandingGearDrag;
+    public bool CollapseTurtleDeck;
 
     //tuning parameter for dragForce
     public float InducedDrag = 15;
@@ -109,6 +110,10 @@ public class PlaneController : MonoBehaviour
 
     [Tooltip("How strongly the nose is pulled toward the velocity vector. " + "(what turns a bank into an actual coordinated turn instead of a sideways slide)")]
     public AnimationCurve YawStabilityCurve;
+
+    [Tooltip("Minimum seconds between accepted button presses")]
+    public float CooldownDuration = 1.5f;
+    private float NextAllowedTime = 0f;
 
     void OnDrawGizmosSelected()
     {
@@ -159,6 +164,23 @@ public class PlaneController : MonoBehaviour
     //    Debug.Log("Throttled!");
     //}
 
+    void Update()
+    {
+        if (PlayerInput.Plane.MoveLandingGear.WasPressedThisFrame() && Time.time >= NextAllowedTime)
+        {
+            NextAllowedTime = Time.time + CooldownDuration;
+            LandingGearDeployed = !LandingGearDeployed;
+        }
+
+        if (PlayerInput.Plane.MoveTurtleDeck.WasPressedThisFrame() && Time.time >= NextAllowedTime)
+        {
+            NextAllowedTime = Time.time + CooldownDuration;
+            CollapseTurtleDeck = !CollapseTurtleDeck;
+        }
+        //if (PlayerInput.Plane.MoveLandingGear.IsPressed()) LandingGearDeployed = !LandingGearDeployed;
+        //if (PlayerInput.Plane.MoveTurtleDeck.IsPressed()) CollapseTurtleDeck = !CollapseTurtleDeck;
+    }
+
     void FixedUpdate()
     {
         if (PlayerInput.Plane.IncreaseThrottle.IsPressed())
@@ -188,7 +210,7 @@ public class PlaneController : MonoBehaviour
         if (PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = true;
         if (!PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = false;
 
-        if (PlayerInput.Plane.MoveLandingGear.IsPressed()) LandingGearDeployed = !LandingGearDeployed;
+
 
         controlInput = new Vector3(pitch, yaw, roll);
 

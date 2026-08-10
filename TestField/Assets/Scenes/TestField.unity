@@ -304,6 +304,22 @@ MonoBehaviour:
   stateName: Armature|Move Landing Gear
   clip: {fileID: -5696830118209167164, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
   PlaybackDuration: 0
+--- !u!114 &273558305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273558300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 500e6c988ad58cd40bd97445d8ea5b4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planeController: {fileID: 1213052772}
+  stateName: Armature|Move Turtle Deck
+  clip: {fileID: 1277961049294636545, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
+  PlaybackDuration: 0
 --- !u!1 &280252687
 GameObject:
   m_ObjectHideFlags: 0
@@ -1051,6 +1067,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
       insertIndex: -1
       addedObject: {fileID: 273558304}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 273558305}
     - targetCorrespondingSourceObject: {fileID: -4693042304938349712, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
       insertIndex: -1
       addedObject: {fileID: 549927993}
@@ -1410,6 +1429,7 @@ MonoBehaviour:
   FlapsAOABias: 0
   LandingGearDeployed: 1
   LandingGearDrag: 15
+  CollapseTurtleDeck: 0
   InducedDrag: 15
   LiftPower: 150
   LiftAOACurve:
@@ -1660,6 +1680,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  CooldownDuration: 1.5
   Weight: 10
   DragScale: 0.16
   LiftScale: 0.16
