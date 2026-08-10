@@ -75,6 +75,7 @@ public class PlaneController : MonoBehaviour
     public float FlapsLiftPower;
     public float FlapsAOABias;
     public bool LandingGearDeployed;
+    public float LandingGearDrag;
 
     //tuning parameter for dragForce
     public float InducedDrag = 15;
@@ -187,6 +188,8 @@ public class PlaneController : MonoBehaviour
         if (PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = true;
         if (!PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = false;
 
+        if (PlayerInput.Plane.MoveLandingGear.IsPressed()) LandingGearDeployed = !LandingGearDeployed;
+
         controlInput = new Vector3(pitch, yaw, roll);
 
 
@@ -287,6 +290,7 @@ public class PlaneController : MonoBehaviour
 
         float AirbrakeDrag = AirbrakeDeployed ? this.AirbrakeDrag : 0;
         float FlapsDrag = FlapsDeployed ? this.FlapsDrag : 0;
+        float LandingGearDrag = LandingGearDeployed ? this.LandingGearDrag : 0;
 
         //calculate coefficient of drag depending on direction on velocity
         //six drag coefficents are defined by the unity AnimationCurve class, the input to the curve is speed and the output is coefficient of drag
@@ -295,7 +299,7 @@ public class PlaneController : MonoBehaviour
             lv.normalized,
             DragRight.Evaluate(Mathf.Abs(lv.x)), DragLeft.Evaluate(Mathf.Abs(lv.x)),
             DragTop.Evaluate(Mathf.Abs(lv.y)), DragBottom.Evaluate(Mathf.Abs(lv.y)),
-            DragForward.Evaluate(Mathf.Abs(lv.z)) + AirbrakeDrag + FlapsDrag, DragBack.Evaluate(Mathf.Abs(lv.z))
+            DragForward.Evaluate(Mathf.Abs(lv.z)) + AirbrakeDrag + FlapsDrag + LandingGearDrag, DragBack.Evaluate(Mathf.Abs(lv.z))
         );
 
         var drag = coefficient.magnitude * lv2 * -lv.normalized * DragScale;    // drag is the opposite direction of velocity
@@ -432,6 +436,8 @@ public class PlaneController : MonoBehaviour
         FlapsDrag = 0;
         FlapsLiftPower = 150;
         FlapsAOABias = 0;
+        LandingGearDeployed = true;
+        LandingGearDrag = 15;
         InducedDrag = 15;
         LiftPower = 150;
         LiftAOACurve = new AnimationCurve(

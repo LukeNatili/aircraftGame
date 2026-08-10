@@ -288,6 +288,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &273558304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273558300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985e84d25a2d90d429eb7764cae185fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planeController: {fileID: 1213052772}
+  stateName: Armature|Move Landing Gear
+  clip: {fileID: -5696830118209167164, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
+  PlaybackDuration: 0
 --- !u!1 &280252687
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,6 +1048,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
       insertIndex: -1
       addedObject: {fileID: 273558302}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 273558304}
     - targetCorrespondingSourceObject: {fileID: -4693042304938349712, guid: 33e029a225a253d4ebdf16c708b33f41, type: 3}
       insertIndex: -1
       addedObject: {fileID: 549927993}
@@ -1389,7 +1408,8 @@ MonoBehaviour:
   FlapsDrag: 0
   FlapsLiftPower: 150
   FlapsAOABias: 0
-  LandingGearDeployed: 0
+  LandingGearDeployed: 1
+  LandingGearDrag: 15
   InducedDrag: 15
   LiftPower: 150
   LiftAOACurve:

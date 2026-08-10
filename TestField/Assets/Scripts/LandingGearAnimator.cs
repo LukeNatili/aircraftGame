@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class AirbrakeAnimator : MonoBehaviour
+public class LandingGearAnimator : MonoBehaviour
 {
     [Tooltip("Reference to the plane's controller — this is the single source of truth for whether the airbrake is deployed.")]
     public PlaneController planeController;
 
     [Tooltip("Name of the state in the Animator Controller holding the airbrake clip.")]
-    public string stateName = "Armature|Move Dive Brakes";
+    public string stateName = "Armature|Move Landing Gear";
 
     [Tooltip("The clip itself, used only to read its length so time can be normalized correctly.")]
     public AnimationClip clip;
@@ -30,13 +30,13 @@ public class AirbrakeAnimator : MonoBehaviour
 
     private void Update()
     {
-        bool deployed = planeController != null && planeController.AirbrakeDeployed;
+        bool deployed = planeController != null && !planeController.LandingGearDeployed;
 
         float step = Time.deltaTime / Mathf.Max(PlaybackDuration, 0.01f);
         NormalizedTime += deployed ? step : -step;
         NormalizedTime = Mathf.Clamp01(NormalizedTime);
-
-        //the number is the layer number
-        animator.Play(stateName, 0, NormalizedTime);
+         
+        // the number is the layer number
+        animator.Play(stateName, 1, NormalizedTime);
     }
 }

@@ -1163,6 +1163,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MoveLandingGear"",
+                    ""type"": ""Button"",
+                    ""id"": ""6e00587d-fd6c-41a4-adae-69739cb56f0d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MoveTurtleDeck"",
+                    ""type"": ""Button"",
+                    ""id"": ""aa235bda-4faa-485b-ab85-d1598545b038"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1341,6 +1359,50 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""DeployAirbreak"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd42bfbd-1cd3-41f0-a851-74a15ebdf5ff"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""MoveLandingGear"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5589130-2251-4114-b39a-0c5f06ca2d2f"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MoveLandingGear"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de639c7a-a9a0-4158-b0af-549c29c94abe"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""MoveTurtleDeck"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b0d3b15a-c936-4039-8878-5ee0df771422"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MoveTurtleDeck"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1441,6 +1503,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Plane_PitchDown = m_Plane.FindAction("PitchDown", throwIfNotFound: true);
         m_Plane_PitchUp = m_Plane.FindAction("PitchUp", throwIfNotFound: true);
         m_Plane_DeployAirbreak = m_Plane.FindAction("DeployAirbreak", throwIfNotFound: true);
+        m_Plane_MoveLandingGear = m_Plane.FindAction("MoveLandingGear", throwIfNotFound: true);
+        m_Plane_MoveTurtleDeck = m_Plane.FindAction("MoveTurtleDeck", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -1910,6 +1974,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Plane_PitchDown;
     private readonly InputAction m_Plane_PitchUp;
     private readonly InputAction m_Plane_DeployAirbreak;
+    private readonly InputAction m_Plane_MoveLandingGear;
+    private readonly InputAction m_Plane_MoveTurtleDeck;
     /// <summary>
     /// Provides access to input actions defined in input action map "Plane".
     /// </summary>
@@ -1953,6 +2019,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Plane/DeployAirbreak".
         /// </summary>
         public InputAction @DeployAirbreak => m_Wrapper.m_Plane_DeployAirbreak;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/MoveLandingGear".
+        /// </summary>
+        public InputAction @MoveLandingGear => m_Wrapper.m_Plane_MoveLandingGear;
+        /// <summary>
+        /// Provides access to the underlying input action "Plane/MoveTurtleDeck".
+        /// </summary>
+        public InputAction @MoveTurtleDeck => m_Wrapper.m_Plane_MoveTurtleDeck;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -2003,6 +2077,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DeployAirbreak.started += instance.OnDeployAirbreak;
             @DeployAirbreak.performed += instance.OnDeployAirbreak;
             @DeployAirbreak.canceled += instance.OnDeployAirbreak;
+            @MoveLandingGear.started += instance.OnMoveLandingGear;
+            @MoveLandingGear.performed += instance.OnMoveLandingGear;
+            @MoveLandingGear.canceled += instance.OnMoveLandingGear;
+            @MoveTurtleDeck.started += instance.OnMoveTurtleDeck;
+            @MoveTurtleDeck.performed += instance.OnMoveTurtleDeck;
+            @MoveTurtleDeck.canceled += instance.OnMoveTurtleDeck;
         }
 
         /// <summary>
@@ -2038,6 +2118,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DeployAirbreak.started -= instance.OnDeployAirbreak;
             @DeployAirbreak.performed -= instance.OnDeployAirbreak;
             @DeployAirbreak.canceled -= instance.OnDeployAirbreak;
+            @MoveLandingGear.started -= instance.OnMoveLandingGear;
+            @MoveLandingGear.performed -= instance.OnMoveLandingGear;
+            @MoveLandingGear.canceled -= instance.OnMoveLandingGear;
+            @MoveTurtleDeck.started -= instance.OnMoveTurtleDeck;
+            @MoveTurtleDeck.performed -= instance.OnMoveTurtleDeck;
+            @MoveTurtleDeck.canceled -= instance.OnMoveTurtleDeck;
         }
 
         /// <summary>
@@ -2348,5 +2434,19 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDeployAirbreak(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MoveLandingGear" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMoveLandingGear(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MoveTurtleDeck" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMoveTurtleDeck(InputAction.CallbackContext context);
     }
 }
