@@ -76,7 +76,6 @@ public class PlaneController : MonoBehaviour
     public float FlapsAOABias;
     public bool LandingGearDeployed;
     public float LandingGearDrag;
-    public bool CollapseTurtleDeck;
 
     //tuning parameter for dragForce
     public float InducedDrag = 15;
@@ -110,12 +109,6 @@ public class PlaneController : MonoBehaviour
 
     [Tooltip("How strongly the nose is pulled toward the velocity vector. " + "(what turns a bank into an actual coordinated turn instead of a sideways slide)")]
     public AnimationCurve YawStabilityCurve;
-
-    [Tooltip("Minimum seconds between accepted button inputs")]
-    public float LandingGearCooldownDuration = 1f;
-    public float TurtleDeckCooldownDuration = 1f;
-    private float LandingGearNextAllowedTime = 0f;
-    private float TurtleDeckNextAllowedTime = 0f;
 
     void OnDrawGizmosSelected()
     {
@@ -166,31 +159,8 @@ public class PlaneController : MonoBehaviour
     //    Debug.Log("Throttled!");
     //}
 
-    void Update()
-    {
-        //these input readers are hear because they are a one-time button press to toggle a bool. WasPressedThisFrame() is a one-frame edge rather than IsPressed(), a held state
-        //adds a cooldown to prevent spam toggling the bool
-        if (PlayerInput.Plane.MoveLandingGear.WasPressedThisFrame() && Time.time >= LandingGearNextAllowedTime)
-        {
-            LandingGearNextAllowedTime = Time.time + LandingGearCooldownDuration;
-            LandingGearDeployed = !LandingGearDeployed;
-            //if (PlayerInput.Plane.MoveLandingGear.IsPressed()) LandingGearDeployed = !LandingGearDeployed;
-        }
-
-        if (PlayerInput.Plane.MoveTurtleDeck.WasPressedThisFrame() && Time.time >= TurtleDeckNextAllowedTime)
-        {
-            TurtleDeckNextAllowedTime = Time.time + TurtleDeckCooldownDuration;
-            CollapseTurtleDeck = !CollapseTurtleDeck;
-            //if (PlayerInput.Plane.MoveTurtleDeck.IsPressed()) CollapseTurtleDeck = !CollapseTurtleDeck;
-
-        }
-
-    }
-
-    // FixedUpdate doesn't run once per rendered frame, depending on your framerate vs the fixed timestep it can run zero, one, or multiple times within a single rendered frame.
     void FixedUpdate()
     {
-        //these input readers are here because IsPressed is a held state rather than WasPressedThisFrame(), which is a one-frame edge
         if (PlayerInput.Plane.IncreaseThrottle.IsPressed())
         {
             Throttle = Mathf.Min(Throttle + (IncrementSpeed / 500f) * Time.deltaTime, 1f);
@@ -218,14 +188,15 @@ public class PlaneController : MonoBehaviour
         if (PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = true;
         if (!PlayerInput.Plane.DeployAirbreak.IsPressed()) AirbrakeDeployed = false;
 
+        if (PlayerInput.Plane.MoveLandingGear.IsPressed()) LandingGearDeployed = !LandingGearDeployed;
+
         controlInput = new Vector3(pitch, yaw, roll);
 
 
         float dt = Time.fixedDeltaTime;
 
         Debug.Log($"Throttle: {Throttle}, Thrust Force: {Throttle * MaxThrust}");
-        //Debug.Log($"[Cooldown] frame:{Time.frameCount} pressed:{PlayerInput.Plane.MoveLandingGear.WasPressedThisFrame()} time:{Time.time:F3} nextAllowed:{NextAllowedTime:F3} ready:{Time.time >= NextAllowedTime}");
-
+        
 
         CalculateState(dt);
         CalculateAngleOfAttack();
@@ -467,7 +438,6 @@ public class PlaneController : MonoBehaviour
         FlapsAOABias = 0;
         LandingGearDeployed = true;
         LandingGearDrag = 15;
-        CollapseTurtleDeck = false;
         InducedDrag = 15;
         LiftPower = 150;
         LiftAOACurve = new AnimationCurve(
