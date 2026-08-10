@@ -187,7 +187,7 @@ public class PlaneController : MonoBehaviour
 
     }
 
-    // FixedUpdate doesn't run once per rendered frame, depending on your framerate vs the fixed timestep it can run zero, one, or multiple times within a single rendered frame
+    // FixedUpdate doesn't run once per rendered frame, depending on your framerate vs the fixed timestep it can run zero, one, or multiple times within a single rendered frame.
     void FixedUpdate()
     {
         //these input readers are here because IsPressed is a held state rather than WasPressedThisFrame(), which is a one-frame edge
