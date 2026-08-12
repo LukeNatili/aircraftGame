@@ -63,6 +63,7 @@ sysinfo.txt
 *.aab
 *.unitypackage
 !Helldiver.unitypackage
+!AnimatedHelldiver.unitypackage
 *.app
 
 # Crashlytics generated file
