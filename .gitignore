@@ -64,8 +64,13 @@ sysinfo.txt
 *.unitypackage
 !Helldiver.unitypackage
 !AnimatedHelldiver.unitypackage
+!FlyingHelldiver.unitypackage
 !FollowCamera.unitypackage
 !OrbitCamera.unitypackage
+!George.unitypackage
+!Leela.unitypackage
+!Mike.unitypackage
+!Stan.unitypackage
 *.app
 
 # Crashlytics generated file
