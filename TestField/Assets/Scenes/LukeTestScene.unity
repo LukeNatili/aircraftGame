@@ -741,7 +741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GlobeTransform: {fileID: 1024864933}
-  MarkerPrefab: {fileID: 170185336669801737, guid: 0e3bf450f702c0441969be754e885062, type: 3}
+  MarkerPrefab: {fileID: 1510905872980255554, guid: 0e3bf450f702c0441969be754e885062, type: 3}
 --- !u!1 &1049548306 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7501481305434553388, guid: ab0d982db96b12744aac694ef01e8c47, type: 3}
