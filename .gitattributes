@@ -16,3 +16,17 @@
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.obj filter=lfs diff=lfs merge=lfs -text
 *.raw filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Left_Aileron_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Circle_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Gunner_Canopy_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Left_Slat_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Left_Exhaust_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Right_Tail_Fin_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Bomb_Bay_Left_Door_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Prop_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Left_Elevator_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Right_Elevator_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Rudder_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Bomb_Bay_Right_Door_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Left_Tail_Fin_Color filter=lfs diff=lfs merge=lfs -text
+Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Pilot_Canopy_Color filter=lfs diff=lfs merge=lfs -text
