@@ -31,3 +31,4 @@ Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Bomb_Bay_Right_Door_Col
 Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Left_Tail_Fin_Color filter=lfs diff=lfs merge=lfs -text
 Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Pilot_Canopy_Color filter=lfs diff=lfs merge=lfs -text
 Aircraft/SB2C[[:space:]]Helldiver/Helldiver.fbm/Ucupaint_Dive_Brake_Color filter=lfs diff=lfs merge=lfs -text
+*.paint filter=lfs diff=lfs merge=lfs -text
